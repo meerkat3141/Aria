@@ -2,6 +2,7 @@ import React from 'react';
 import type { JobResults } from '../types';
 import { api } from '../services/api';
 import { AuditGraph } from './AuditGraph';
+import { DownloadIcon, CloseIcon } from './Icons';
 
 interface Props {
     jobId: string;
@@ -33,7 +34,7 @@ export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
                             download
                             className="px-4 py-2 bg-[#F5F5DC] text-[#2C3E50] border-2 border-[#2C3E50] rounded-md text-sm flex items-center transition-all font-bold hover:shadow-[4px_4px_0px_0px_#2C3E50] hover:-translate-y-1 active:translate-y-0 active:shadow-none"
                         >
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            <DownloadIcon className="w-4 h-4 mr-2" />
                             Download PDF
                         </a>
                         <button
@@ -41,7 +42,7 @@ export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
                             className="p-2 bg-[#F5F5DC] border-2 border-[#2C3E50] rounded-md text-[#2C3E50] transition-all hover:shadow-[4px_4px_0px_0px_#2C3E50] hover:-translate-y-1 active:translate-y-0 active:shadow-none"
                             aria-label="Close details"
                         >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            <CloseIcon className="w-6 h-6" />
                         </button>
                     </div>
                 </div>

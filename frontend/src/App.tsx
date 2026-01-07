@@ -5,6 +5,7 @@ import { LandingPage } from './components/LandingPage';
 import { api } from './services/api';
 import { BackgroundLines } from './components/BackgroundLines';
 import { Squares } from './components/Squares';
+import { HomeIcon, PlusIcon, DashboardIcon } from './components/Icons';
 
 function App() {
   const [jobIds, setJobIds] = useState<string[]>([]);
@@ -42,7 +43,7 @@ function App() {
             onClick={() => setActiveTab('home')}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'home' ? 'bg-[#9DB68B] text-white shadow-md' : 'text-[#5D6D7E] hover:bg-[#9DB68B]/20 hover:text-[#2C3E50]'}`}
           >
-            <svg className={`w-5 h-5 transition-colors ${activeTab === 'home' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            <HomeIcon className={`w-5 h-5 transition-colors ${activeTab === 'home' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} />
             <span className="font-medium">Home</span>
           </button>
 
@@ -50,7 +51,7 @@ function App() {
             onClick={() => setActiveTab('new')}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'new' ? 'bg-[#9DB68B] text-white shadow-md' : 'text-[#5D6D7E] hover:bg-[#9DB68B]/20 hover:text-[#2C3E50]'}`}
           >
-            <svg className={`w-5 h-5 transition-colors ${activeTab === 'new' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            <PlusIcon className={`w-5 h-5 transition-colors ${activeTab === 'new' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} />
             <span className="font-medium">New Audit</span>
           </button>
 
@@ -58,7 +59,7 @@ function App() {
             onClick={() => setActiveTab('history')}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'history' ? 'bg-[#9DB68B] text-white shadow-md' : 'text-[#5D6D7E] hover:bg-[#9DB68B]/20 hover:text-[#2C3E50]'}`}
           >
-            <svg className={`w-5 h-5 transition-colors ${activeTab === 'history' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+            <DashboardIcon className={`w-5 h-5 transition-colors ${activeTab === 'history' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} />
             <span className="font-medium">Dashboard</span>
             {jobIds.length > 0 && <span className="ml-auto bg-white/30 text-xs px-2 py-0.5 rounded-full text-[#2C3E50]">{jobIds.length}</span>}
           </button>
