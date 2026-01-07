@@ -12,10 +12,12 @@ class Crawler:
         self.queue: List[str] = [self.start_url]
         self.domain = urlparse(start_url).netloc
 
-    async def crawl(self) -> List[str]:
+        self.edges = [] # List of (source, target) tuples
+
+    async def crawl(self) -> dict:
         """
         Crawls the website to find up to max_pages unique internal links.
-        Prioritizes 'Contact', 'About', 'Pricing'.
+        Returns: { "pages": [url1, ...], "edges": [{"source": u1, "target": u2}, ...] }
         """
         found_urls = []
         
@@ -59,6 +61,10 @@ class Crawler:
                             # Clean up fragment/query
                             clean_url = (parsed.scheme + "://" + parsed.netloc + parsed.path).rstrip('/')
                             
+                            if parsed.netloc == self.domain:
+                                # Add edge if it's internal
+                                self.edges.append({"source": current_url, "target": clean_url})
+                                
                             if parsed.netloc == self.domain and clean_url not in self.visited:
                                 link_text = link.get_text().lower()
                                 if any(p in link_text for p in ['contact', 'about', 'pricing']):
@@ -73,7 +79,10 @@ class Crawler:
                 except Exception as e:
                     print(f"Error crawling {current_url}: {e}")
                     
-        return found_urls[:self.max_pages]
+        return {
+            "pages": found_urls[:self.max_pages],
+            "edges": self.edges
+        }
 
 if __name__ == "__main__":
     # Test

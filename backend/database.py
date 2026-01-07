@@ -16,6 +16,7 @@ class AuditJob(Base):
     id = Column(String, primary_key=True, index=True)
     status = Column(String, default="Pending") # Pending, Processing, Completed, Failed
     urls = Column(JSON) # List of URLs to audit
+    graph_data = Column(JSON, nullable=True) # {"nodes": [], "edges": []}
     created_at = Column(DateTime, default=datetime.utcnow)
     error_message = Column(Text, nullable=True)
 

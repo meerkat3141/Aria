@@ -7,6 +7,11 @@ import asyncio
 from datetime import datetime
 import os
 import json
+import sys
+
+# Enforce ProactorEventLoop on Windows for Playwright
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 from database import engine, SessionLocal, init_db, AuditJob, AuditResult, get_db
 from crawler import Crawler
@@ -17,6 +22,16 @@ from report_generator import ReportGenerator
 init_db()
 
 app = FastAPI(title="ADA Compliance Auditor API")
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite default port
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class AuditRequest(BaseModel):
     urls: List[str]
@@ -49,13 +64,22 @@ async def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = T
         
         # 1. Crawl
         all_pages_to_audit = []
+        all_edges = []
         for url in start_urls:
             crawler = Crawler(url, max_pages=5)
-            pages = await crawler.crawl()
-            all_pages_to_audit.extend(pages)
+            crawl_data = await crawler.crawl() # Now returns dict
+            all_pages_to_audit.extend(crawl_data["pages"])
+            all_edges.extend(crawl_data["edges"])
         
         # Deduplicate
         all_pages_to_audit = list(set(all_pages_to_audit))
+        
+        # Save graph edges to job
+        job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
+        if job:
+            job.graph_data = {"edges": all_edges}
+            db.commit()
+
         job_progress[job_id] = f"0/{len(all_pages_to_audit)} pages audited"
         
         # 2. Audit
@@ -106,7 +130,7 @@ async def get_results(job_id: str, db = Depends(get_db)):
     results = db.query(AuditResult).filter(AuditResult.job_id == job_id).all()
     data = [res.compliance_data for res in results]
     
-    return {"job_id": job_id, "status": job.status, "results": data}
+    return {"job_id": job_id, "status": job.status, "results": data, "graph_data": job.graph_data}
 
 @app.get("/audit/{job_id}/report/pdf")
 async def get_pdf_report(job_id: str, db = Depends(get_db)):
@@ -126,7 +150,7 @@ async def get_pdf_report(job_id: str, db = Depends(get_db)):
     
     report_gen = ReportGenerator()
     filename = f"audit_report_{job_id}.pdf"
-    file_path = os.path.join(os.getcwd(), filename)
+    file_path = os.path.join(os.getcwd(), 'reports', filename)
     report_gen.generate_pdf(job_data, file_path)
     
     return FileResponse(file_path, filename=filename, media_type='application/pdf')
