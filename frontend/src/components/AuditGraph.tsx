@@ -37,7 +37,6 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 
     const layoutedNodes = nodes.map((node) => {
         const nodeWithPosition = dagreGraph.node(node.id);
-        // adjust to center
         node.position = {
             x: nodeWithPosition.x - nodeWidth / 2,
             y: nodeWithPosition.y - nodeHeight / 2,
@@ -55,13 +54,11 @@ export const AuditGraph: React.FC<Props> = ({ data }) => {
     useEffect(() => {
         if (!data.results) return;
 
-        // 1. Create Nodes
         const initialNodes: Node[] = data.results.map((page) => {
-            let colorClass = '#E74C3C'; // Red
-            if (page.score >= 90) colorClass = '#27AE60'; // Green
-            else if (page.score >= 70) colorClass = '#F39C12'; // Orange/Yellow
+            let colorClass = '#E74C3C';
+            if (page.score >= 90) colorClass = '#27AE60';
+            else if (page.score >= 70) colorClass = '#F39C12';
 
-            // Simplify URL for display
             let label = page.url;
             try {
                 const u = new URL(page.url);
@@ -69,12 +66,12 @@ export const AuditGraph: React.FC<Props> = ({ data }) => {
             } catch (e) { }
 
             return {
-                id: page.url, // URL as ID
+                id: page.url,
                 data: { label: `${label} (Score: ${page.score})` },
                 position: { x: 0, y: 0 },
                 style: {
-                    background: '#F5F5DC', // Light Beige
-                    color: '#2C3E50', // Dark Slate
+                    background: '#F5F5DC',
+                    color: '#2C3E50',
                     border: `2px solid ${colorClass}`,
                     borderRadius: '8px',
                     width: nodeWidth,
@@ -85,11 +82,9 @@ export const AuditGraph: React.FC<Props> = ({ data }) => {
             };
         });
 
-        // 2. Create Edges
         const initialEdges: Edge[] = [];
         if (data.graph_data?.edges) {
             data.graph_data.edges.forEach((link, idx) => {
-                // Only add edge if both nodes exist in our results
                 const sourceExists = initialNodes.find(n => n.id === link.source);
                 const targetExists = initialNodes.find(n => n.id === link.target);
 
@@ -100,7 +95,7 @@ export const AuditGraph: React.FC<Props> = ({ data }) => {
                         target: link.target,
                         type: 'smoothstep',
                         animated: true,
-                        style: { stroke: '#7F8C8D', strokeWidth: 1.5 }, // Grey edges
+                        style: { stroke: '#7F8C8D', strokeWidth: 1.5 },
                         markerEnd: {
                             type: MarkerType.ArrowClosed,
                             color: '#7F8C8D',

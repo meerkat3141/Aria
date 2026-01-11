@@ -9,7 +9,6 @@ import os
 import json
 import sys
 
-# Enforce ProactorEventLoop on Windows for Playwright
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
@@ -18,7 +17,6 @@ from crawler import Crawler
 from auditor import ADAAuditor
 from report_generator import ReportGenerator
 
-# Initialize DB
 init_db()
 
 app = FastAPI(title="ADA Compliance Auditor API")
@@ -27,7 +25,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite default port
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,8 +40,6 @@ class AuditStatusResponse(BaseModel):
     status: str
     progress: Optional[str] = None
 
-# Global state for simple progress tracking (in-memory for MVP)
-# In production, use Redis or DB for granular progress
 job_progress = {}
 
 def update_job_status(db, job_id, status, error=None):
@@ -62,19 +58,16 @@ async def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = T
     try:
         update_job_status(db, job_id, "Processing")
         
-        # 1. Crawl
         all_pages_to_audit = []
         all_edges = []
         for url in start_urls:
             crawler = Crawler(url, max_pages=5)
-            crawl_data = await crawler.crawl() # Now returns dict
+            crawl_data = await crawler.crawl()
             all_pages_to_audit.extend(crawl_data["pages"])
             all_edges.extend(crawl_data["edges"])
         
-        # Deduplicate
         all_pages_to_audit = list(set(all_pages_to_audit))
         
-        # Save graph edges to job
         job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
         if job:
             job.graph_data = {"edges": all_edges}
@@ -82,13 +75,11 @@ async def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = T
 
         job_progress[job_id] = f"0/{len(all_pages_to_audit)} pages audited"
         
-        # 2. Audit
         results = []
         for i, page_url in enumerate(all_pages_to_audit):
             job_progress[job_id] = f"{i+1}/{len(all_pages_to_audit)} pages audited"
             audit_data = await auditor.audit_page(page_url)
             
-            # Save result
             result_entry = AuditResult(job_id=job_id, url=page_url, compliance_data=audit_data)
             db.add(result_entry)
             db.commit()

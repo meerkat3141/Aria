@@ -8,7 +8,6 @@ BASE_URL = "http://localhost:8000"
 def test_audit():
     print("Starting audit test...")
     
-    # 1. Start Audit
     try:
         response = httpx.post(f"{BASE_URL}/audit/start", json={"urls": ["https://plantpico.com"]})
         response.raise_for_status()
@@ -19,7 +18,6 @@ def test_audit():
         print(f"Failed to start audit: {e}")
         return
 
-    # 2. Poll Status
     status = "Pending"
     while status in ["Pending", "Processing"]:
         time.sleep(2)
@@ -38,18 +36,15 @@ def test_audit():
             print(f"Polling failed: {e}")
             return
 
-    # 3. Get Results
     try:
         res = httpx.get(f"{BASE_URL}/audit/{job_id}/results")
         res.raise_for_status()
         results = res.json()
         print("\n Audit Results JSON (Summary):")
-        # Print a snippet
         print(str(results)[:500] + "...")
     except Exception as e:
         print(f"Failed to get results: {e}")
 
-    # 4. Download PDF
     try:
         print("\nDownloading PDF Report...")
         res = httpx.get(f"{BASE_URL}/audit/{job_id}/report/pdf")

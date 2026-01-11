@@ -14,9 +14,9 @@ class AuditJob(Base):
     __tablename__ = "audit_jobs"
 
     id = Column(String, primary_key=True, index=True)
-    status = Column(String, default="Pending") # Pending, Processing, Completed, Failed
-    urls = Column(JSON) # List of URLs to audit
-    graph_data = Column(JSON, nullable=True) # {"nodes": [], "edges": []}
+    status = Column(String, default="Pending") 
+    urls = Column(JSON) 
+    graph_data = Column(JSON, nullable=True) 
     created_at = Column(DateTime, default=datetime.utcnow)
     error_message = Column(Text, nullable=True)
 
@@ -26,7 +26,7 @@ class AuditResult(Base):
     id = Column(Integer, primary_key=True, index=True)
     job_id = Column(String, index=True)
     url = Column(String)
-    compliance_data = Column(JSON) # The full JSON result for this page
+    compliance_data = Column(JSON) 
 
 def init_db():
     Base.metadata.create_all(bind=engine)

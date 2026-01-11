@@ -12,17 +12,10 @@ class Crawler:
         self.queue: List[str] = [self.start_url]
         self.domain = urlparse(start_url).netloc
 
-        self.edges = [] # List of (source, target) tuples
+        self.edges = [] 
 
     async def crawl(self) -> dict:
-        """
-        Crawls the website to find up to max_pages unique internal links.
-        Returns: { "pages": [url1, ...], "edges": [{"source": u1, "target": u2}, ...] }
-        """
         found_urls = []
-        
-        # We need a headless browser or just simple HTTP requests. 
-        # Since we use BS4 for static scraping as per requirements, we'll use httpx to fetch HTML.
         
         async with httpx.AsyncClient(follow_redirects=True, timeout=10.0) as client:
             while self.queue and len(found_urls) < self.max_pages:
@@ -33,13 +26,11 @@ class Crawler:
                 
                 self.visited.add(current_url)
                 
-                # Check if it's internal
                 if urlparse(current_url).netloc != self.domain:
                     continue
 
                 found_urls.append(current_url)
                 
-                # Stop if we have enough
                 if len(found_urls) >= self.max_pages:
                     break
 
@@ -49,7 +40,6 @@ class Crawler:
                         soup = BeautifulSoup(response.text, 'html.parser')
                         links = soup.find_all('a', href=True)
                         
-                        # Prioritize specific pages
                         priority_links = []
                         other_links = []
                         
@@ -58,11 +48,9 @@ class Crawler:
                             full_url = urljoin(current_url, href)
                             parsed = urlparse(full_url)
                             
-                            # Clean up fragment/query
                             clean_url = (parsed.scheme + "://" + parsed.netloc + parsed.path).rstrip('/')
                             
                             if parsed.netloc == self.domain:
-                                # Add edge if it's internal
                                 self.edges.append({"source": current_url, "target": clean_url})
                                 
                             if parsed.netloc == self.domain and clean_url not in self.visited:
@@ -72,7 +60,6 @@ class Crawler:
                                 else:
                                     other_links.append(clean_url)
                         
-                        # Add to queue (BFS)
                         self.queue.extend(priority_links)
                         self.queue.extend(other_links)
                         
@@ -85,7 +72,6 @@ class Crawler:
         }
 
 if __name__ == "__main__":
-    # Test
     async def main():
         c = Crawler("https://www.google.com", max_pages=3)
         urls = await c.crawl()

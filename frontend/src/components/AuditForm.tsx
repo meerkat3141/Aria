@@ -14,7 +14,6 @@ export const AuditForm: React.FC<Props> = ({ onAuditStart, isLoading }) => {
         e.preventDefault();
         if (!text.trim()) return;
 
-        // Split by newlines OR commas
         const urls = text.split(/[\n,]+/)
             .map(u => u.trim())
             .filter(u => u.length > 0)
@@ -36,7 +35,7 @@ export const AuditForm: React.FC<Props> = ({ onAuditStart, isLoading }) => {
                         </label>
                         <textarea
                             className="w-full h-40 bg-white text-[#2C3E50] border border-[#D4C5B0] rounded-xl p-4 focus:outline-none focus:border-[#9DB68B] focus:ring-1 focus:ring-[#9DB68B] transition-all font-mono text-sm leading-relaxed scrollbar-thin scrollbar-thumb-[#9DB68B]/50"
-                            placeholder="example.com&#10;google.com"
+                            placeholder="example.com&#10;plantpico.com"
                             value={text}
                             onChange={(e) => setText(e.target.value)}
                         />
@@ -79,4 +78,3 @@ export const AuditForm: React.FC<Props> = ({ onAuditStart, isLoading }) => {
         </div>
     );
 };
-

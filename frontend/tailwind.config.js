@@ -10,8 +10,8 @@ export default {
                 earth: {
                     bg: '#EADCC9',
                     primary: '#9DB68B',
-                    dark: '#2C3E50', // Dark Slate for text
-                    light: '#F5F5DC' // Beige Light
+                    dark: '#2C3E50',
+                    light: '#F5F5DC'
                 }
             },
             fontFamily: {

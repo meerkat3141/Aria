@@ -51,14 +51,11 @@ export const Squares: React.FC<SquaresProps> = ({
                     const squareX = x * squareSize - offsetX;
                     const squareY = y * squareSize - offsetY;
 
-                    // Draw border
                     ctx.strokeStyle = borderColor;
-                    ctx.lineWidth = 1; // Subtle border
+                    ctx.lineWidth = 1;
                     ctx.strokeRect(squareX, squareY, squareSize, squareSize);
 
-                    // Hover effect
                     if (hoveredSquare) {
-                        // Simpler collision detection for hover
                         if (
                             hoveredSquare.x >= squareX &&
                             hoveredSquare.x < squareX + squareSize &&
@@ -97,7 +94,6 @@ export const Squares: React.FC<SquaresProps> = ({
             requestRef.current = requestAnimationFrame(updateGrid);
         };
 
-        // Track mouse over canvas to determine hovered square
         const handleMouseMove = (e: MouseEvent) => {
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;

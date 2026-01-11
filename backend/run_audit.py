@@ -32,16 +32,13 @@ def spinner(text):
 def main():
     print("\n=== ADA Compliance Auditor CLI ===\n")
 
-    # 1. Check Server
     if not check_server():
         print(f"[ERROR] Could not connect to server at {SERVER_URL}")
         print("Please ensure the backend is running: 'python -m uvicorn main:app --port 8000'")
         return
 
-    # 2. Get User Input
     raw_input = get_valid_input("Enter website URL(s) to audit (comma separated, e.g., site1.com, site2.com): ")
     
-    # Parse URLs
     urls = [u.strip() for u in raw_input.split(',')]
     valid_urls = []
     
@@ -60,14 +57,12 @@ def main():
 
     print(f"\n[INFO] Queued {len(valid_urls)} sites for auditing (AI: {'ON' if enable_ai else 'OFF'}).")
 
-    # 3. Process Each URL
     for idx, url in enumerate(valid_urls, 1):
         print(f"\n{'='*60}")
         print(f"Processing Site {idx}/{len(valid_urls)}: {url}")
         print(f"{'='*60}\n")
         
         try:
-            # Start Audit for simple single URL to get separate report
             payload = {"urls": [url], "enable_ai": enable_ai}
             response = httpx.post(f"{SERVER_URL}/audit/start", json=payload, timeout=10.0)
             
@@ -79,7 +74,6 @@ def main():
             job_id = data.get("job_id")
             print(f"[INFO] Job Started! ID: {job_id}")
             
-            # Poll Status
             status = "processing"
             start_time = time.time()
             
@@ -102,10 +96,9 @@ def main():
             print(f"\n[INFO] Finished with status: {status.upper()}")
             
             if status.lower() == "completed":
-                # Download Report
                 print("[INFO] Fetching PDF Report...")
                 try:
-                    pdf_res = httpx.get(f"{SERVER_URL}/audit/{job_id}/report/pdf", timeout=60.0) # Increased timeout for download
+                    pdf_res = httpx.get(f"{SERVER_URL}/audit/{job_id}/report/pdf", timeout=60.0)
                     
                     if pdf_res.status_code == 200:
                         domain = urlparse(url).netloc.replace("www.", "").replace(":", "_")
@@ -125,7 +118,6 @@ def main():
         except Exception as e:
             print(f"\n[EXCEPTION] Error processing {url}: {e}")
         
-        # Small cool-down between sites to be nice to APIs
         if idx < len(valid_urls):
             print("\nWaiting 5 seconds before next site...")
             time.sleep(5)

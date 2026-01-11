@@ -13,16 +13,13 @@ interface Props {
 export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-start justify-center pt-4 pb-4 px-4">
-            {/* Backdrop */}
             <div
                 className="absolute inset-0"
                 onClick={onClose}
             ></div>
 
-            {/* Modal Content */}
             <div className="relative w-full max-w-6xl max-h-[80vh] bg-[#F5F5DC] border border-[#D4C5B0] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
 
-                {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-[#D4C5B0]">
                     <div>
                         <h2 className="text-2xl font-bold text-[#2C3E50] tracking-tight font-serif">Audit Details</h2>
@@ -47,10 +44,8 @@ export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
                     </div>
                 </div>
 
-                {/* Scrollable Body */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
 
-                    {/* Graph Section */}
                     {results.graph_data && (
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold text-[#2C3E50]">Site Structure & Scores</h3>
@@ -58,7 +53,6 @@ export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
                         </div>
                     )}
 
-                    {/* List Section */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-[#2C3E50]">Page Results</h3>
                         <div className="grid gap-3">

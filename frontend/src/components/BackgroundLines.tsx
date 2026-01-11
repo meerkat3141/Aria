@@ -47,18 +47,17 @@ const SVG = ({
         "M-100 400 C 100 500, 300 300, 500 400 C 700 500, 900 300, 1100 400",
         "M-100 500 C 100 600, 300 400, 500 500 C 700 600, 900 400, 1100 500",
 
-        // Cross waves
         "M-100 0 C 0 200, 500 400, 1000 600",
         "M0 -100 C 100 100, 400 500, 800 800",
         "M200 -100 C 300 100, 600 500, 1000 800",
     ];
 
     const colors = [
-        "#9DB68B", // Primary Green
-        "#D4C5B0", // Dark Beige
-        "#2C3E50", // Dark Slate
-        "#8CA87A", // Muted Green
-        "#9DB68B", // Repeat
+        "#9DB68B",
+        "#D4C5B0",
+        "#2C3E50",
+        "#8CA87A",
+        "#9DB68B",
         "#D4C5B0",
         "#2C3E50",
         "#8CA87A",
@@ -80,9 +79,9 @@ const SVG = ({
                     strokeWidth="2"
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{
-                        pathLength: [0, 1, 1], // Draw, hold
+                        pathLength: [0, 1, 1],
                         opacity: [0, 1, 0.5],
-                        pathOffset: [0, 0, 1], // Move along path
+                        pathOffset: [0, 0, 1],
                         strokeDasharray: ["10 10", "0 0", "10 10"]
                     }}
                     transition={{
@@ -95,7 +94,6 @@ const SVG = ({
                 />
             ))}
 
-            {/* Floating Particles for texture */}
             {Array.from({ length: 20 }).map((_, i) => (
                 <motion.circle
                     key={`circle-${i}`}

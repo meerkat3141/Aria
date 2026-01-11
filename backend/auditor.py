@@ -11,7 +11,6 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if GEMINI_API_KEY:
-    # Strip potential whitespace
     GEMINI_API_KEY = GEMINI_API_KEY.strip()
 
 class GeminiClient:
@@ -23,7 +22,7 @@ class GeminiClient:
             return "[MOCK] Gemini response: Valid/Suggestion"
         
         max_retries = 5
-        base_delay = 5  # Seconds
+        base_delay = 5 
 
         for attempt in range(max_retries):
             try:
@@ -47,7 +46,7 @@ class GeminiClient:
                 if is_rate_limit and attempt < max_retries - 1:
                     print(f"Gemini Rate Limit hit. Retrying in {base_delay}s...")
                     await asyncio.sleep(base_delay)
-                    base_delay *= 2  # Exponential backoff
+                    base_delay *= 2
                 else:
                     print(f"Gemini API Error: {e}")
                     return f"[ERROR] Gemini check failed: {str(e)}"
@@ -77,13 +76,11 @@ class ADAAuditor:
                 content = await page.content()
                 soup = BeautifulSoup(content, 'html.parser')
 
-                # Run checks
                 results["perceivable"] = await self.check_perceivable(page, soup)
                 results["operable"] = await self.check_operable(page, soup, url)
                 results["understandable"] = await self.check_understandable(page, soup)
                 results["robust"] = await self.check_robust(page, soup)
                 
-                # Calculate Score (Simple percentage of Passed checks)
                 all_checks = results["perceivable"] + results["operable"] + results["understandable"] + results["robust"]
                 if all_checks:
                     passed = len([c for c in all_checks if c['status'] == 'pass'])
@@ -108,7 +105,6 @@ class ADAAuditor:
     async def check_perceivable(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         
-        # 1. Image Alt Text
         images = soup.find_all('img')
         missing_alt = []
         suspicious_alt = []
@@ -122,7 +118,6 @@ class ADAAuditor:
                 suspicious_alt.append(f"{src} ('{alt}')")
         
         if missing_alt:
-            # Generate suggestion for the first few
             suggestion = ""
             if len(missing_alt) > 0 and self.enable_ai:
                  prompt = (
@@ -152,14 +147,12 @@ class ADAAuditor:
                 "Review these images to ensure alt text is descriptive."
             ))
 
-        # 2. Visual Contrast Check (AI Vision)
         contrast_status = "pass"
         contrast_desc = "Visual contrast check passed."
         contrast_remediation = None
         
         if self.enable_ai:
             try:
-                # Take screenshot
                 screenshot = await page.screenshot(full_page=False, type='png')
                 
                 prompt = (
@@ -180,7 +173,7 @@ class ADAAuditor:
                     
             except Exception as e:
                 contrast_desc = f"AI Visual Analysis failed: {e}"
-                contrast_status = "pass" # Fallback to pass
+                contrast_status = "pass"
 
         checks.append(self.create_check(
             "color-contrast", "Visual Color Contrast (AI)", contrast_status, 
@@ -193,7 +186,6 @@ class ADAAuditor:
     async def check_operable(self, page: Page, soup: BeautifulSoup, url: str) -> List[Dict[str, Any]]:
         checks = []
         
-        # 1. Page Title
         title = soup.title.string if soup.title else None
         if not title:
             checks.append(self.create_check(
@@ -207,7 +199,6 @@ class ADAAuditor:
                 f"Page title found: '{title}'."
             ))
             
-        # 2. Skip Navigation
         skip_links = soup.find_all('a', href=True)
         has_skip = any("skip" in link.get_text().lower() or "skip" in link['href'].lower() for link in skip_links)
         
@@ -223,8 +214,6 @@ class ADAAuditor:
                 "Add a link at the top of the body that points to the main content area (e.g., href='#main')."
             ))
 
-        # 3. Broken Links
-        # Just a placeholder for the logic we had
         checks.append(self.create_check("broken-links", "Broken Links", "pass", "No broken internal anchors detected."))
 
         return checks
@@ -232,7 +221,6 @@ class ADAAuditor:
     async def check_understandable(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         
-        # 1. Lang Attribute
         html_tag = soup.find('html')
         lang = html_tag.get('lang') if html_tag else None
         
@@ -248,7 +236,6 @@ class ADAAuditor:
                 f"HTML lang attribute found: '{lang}'."
             ))
             
-        # 2. Form Labels
         forms = soup.find_all('form')
         missing_labels = []
         for form in forms:
@@ -261,7 +248,7 @@ class ADAAuditor:
                 aria_label = inp.get('aria-label') or inp.get('aria-labelledby')
                 
                 if not (has_label or closest_label or aria_label):
-                    missing_labels.append(str(inp)[:50]) # Truncate for report
+                    missing_labels.append(str(inp)[:50])
 
         if missing_labels:
              checks.append(self.create_check(
@@ -277,17 +264,15 @@ class ADAAuditor:
     async def check_robust(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         
-        # 1. ARIA Roles
         elements_with_role = soup.find_all(attrs={"role": True})
         if elements_with_role:
             validation_msg = "(Gemini validation skipped)"
-            status = "pass" # Default
+            status = "pass"
             remediation = "Review ARIA roles manually."
 
             if self.enable_ai:
-                 # Collect roles for analysis
                  role_samples = []
-                 for el in elements_with_role[:10]: # Analyze first 10 to save tokens
+                 for el in elements_with_role[:10]:
                      role = el.get('role')
                      tag = el.name
                      label = el.get('aria-label') or el.get('aria-labelledby') or "(no label)"
@@ -304,11 +289,7 @@ class ADAAuditor:
                  
                  if "FAIL" in validation_msg.upper():
                      status = "warning"
-                     # Keep remediation static as requested
                      remediation = "Fix invalid ARIA role usage according to WCAG specifications."
-                     # Simplify description to just mention issues found, avoiding long paragraphs
-                     # We can trust the prompt is already concise, but let's ensure the description isn't huge.
-                     # validation_msg contains the AI response.
                      pass 
 
             checks.append(self.create_check(

@@ -16,7 +16,6 @@ function App() {
     setIsLoading(true);
     setActiveTab('history');
 
-    // Process one by one to ensure separate jobs/PDFs
     for (const url of urls) {
       try {
         const id = await api.startAudit([url], enableAi);
@@ -31,7 +30,6 @@ function App() {
   return (
     <div className="flex h-screen w-full bg-earth-bg text-earth-dark font-sans overflow-hidden selection:bg-earth-primary/30 selection:text-earth-dark">
 
-      {/* Sidebar */}
       <aside className="w-64 flex-shrink-0 bg-white/20 backdrop-blur-xl border-r border-[#9DB68B]/30 flex flex-col">
         <div className="p-6 border-b border-[#9DB68B]/30 flex items-center gap-4">
           <img src="/logo-aria.png" alt="Aria Logo" className="w-10 h-10 object-contain" />
@@ -70,9 +68,7 @@ function App() {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 relative overflow-hidden flex flex-col">
-        {/* Background */}
         <div className="absolute inset-0 z-0">
           {activeTab === 'home' ? (
             <BackgroundLines
@@ -83,8 +79,8 @@ function App() {
               direction="up"
               speed={0.5}
               squareSize={50}
-              borderColor="#D4C5B0" // Slightly darker beige for grid lines
-              hoverFillColor="#9DB68B" // Primary Green for hover
+              borderColor="#D4C5B0"
+              hoverFillColor="#9DB68B"
             />
           )}
         </div>

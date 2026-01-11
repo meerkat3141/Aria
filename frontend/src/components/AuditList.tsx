@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 interface Props {
-    jobs: string[]; // List of Job IDs
+    jobs: string[];
 }
 
 export const AuditList: React.FC<Props> = ({ jobs }) => {
@@ -54,7 +54,7 @@ export const HoverEffect = ({
                     <AnimatePresence>
                         {hoveredIndex === idx && (
                             <motion.span
-                                className="absolute inset-0 h-full w-full bg-[#D4C5B0] block rounded-3xl" // Darker beige hover
+                                className="absolute inset-0 h-full w-full bg-[#D4C5B0] block rounded-3xl"
                                 layoutId="hoverBackground"
                                 initial={{ opacity: 0 }}
                                 animate={{
@@ -80,7 +80,6 @@ const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
     const [results, setResults] = useState<JobResults | null>(null);
     const [showModal, setShowModal] = useState(false);
 
-    // Poll for status
     useEffect(() => {
         let interval: any;
 
@@ -92,7 +91,6 @@ const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
                 if (data.status === 'Completed' || data.status === 'Failed') {
                     clearInterval(interval);
                     if (data.status === 'Completed') {
-                        // Fetch results for summary
                         api.getResults(jobId).then(setResults).catch(console.error);
                     }
                 }
@@ -102,12 +100,11 @@ const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
         };
 
         checkStatus();
-        interval = setInterval(checkStatus, 3000); // Poll every 3s
+        interval = setInterval(checkStatus, 3000);
 
         return () => clearInterval(interval);
     }, [jobId]);
 
-    // Simple Matte Loading State
     if (!status) return (
         <Card>
             <div className="p-6 h-[250px] animate-pulse">
@@ -153,7 +150,6 @@ const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
                 </div>
             </Card>
 
-            {/* Modal Portal */}
             {showModal && results && (
                 <DetailsModal jobId={jobId} results={results} onClose={() => setShowModal(false)} />
             )}

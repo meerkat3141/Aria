@@ -9,7 +9,6 @@ interface Props {
 export const LandingPage: React.FC<Props> = ({ onGetStarted }) => {
     return (
         <div className="relative z-10 space-y-24 pb-20">
-            {/* Hero Section */}
             <section className="text-center px-4 min-h-[90vh] flex flex-col justify-center items-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -21,7 +20,7 @@ export const LandingPage: React.FC<Props> = ({ onGetStarted }) => {
                         <span className="text-[#9DB68B]">Simplified by AI</span>
                     </h1>
                     <p className="text-xl text-[#5D6D7E] max-w-2xl mx-auto mb-10 font-sans">
-                        Automated audits, intelligent remediation suggestions, and comprehensive reporting to ensure your digital presence is inclusive for everyone.
+                        Verifying website ADA compliance, through headless browsing, webscraping, and GenAI vision.
                     </p>
                     <button
                         onClick={onGetStarted}
@@ -32,13 +31,12 @@ export const LandingPage: React.FC<Props> = ({ onGetStarted }) => {
                 </motion.div>
             </section>
 
-            {/* Stats Section */}
             <section className="max-w-6xl mx-auto px-4">
                 <div className="grid md:grid-cols-2 gap-12 items-center bg-white/50 border border-[#D4C5B0] p-10 rounded-3xl backdrop-blur-sm">
                     <div className="space-y-6">
                         <h2 className="text-3xl font-serif font-bold text-[#2C3E50]">Why It Matters</h2>
                         <p className="text-[#5D6D7E] text-lg leading-relaxed">
-                            Digital accessibility isn't just a legal requirement—it's a moral imperative. Yet, the vast majority of the web remains inaccessible to users with disabilities.
+                            Website accessibility is not a privilege but a requirement. Despite ADA regulations to ensure accessibility across the web, numerous websites continue to violate these rules, and the web remains unnavigable for users with disabilities.
                         </p>
                         <ul className="space-y-4">
                             <li className="flex items-start">
@@ -66,26 +64,25 @@ export const LandingPage: React.FC<Props> = ({ onGetStarted }) => {
                 </div>
             </section>
 
-            {/* Features (Bento Grid Style) */}
             <section className="max-w-6xl mx-auto px-4">
                 <h2 className="text-3xl font-serif font-bold text-[#2C3E50] text-center mb-12">Powerful Capabilities</h2>
                 <div className="grid md:grid-cols-3 gap-6">
                     <FeatureCard
                         icon={<BrainIcon className="w-8 h-8 text-[#9DB68B]" />}
                         title="AI-Powered Analysis"
-                        description="Uses Google Gemini to semantically understand images and ARIA roles, going beyond simple rule checking."
+                        description="Uses GenAI to analyze website images as well as ARIA roles."
                         delay={0.1}
                     />
                     <FeatureCard
                         icon={<GraphIcon className="w-8 h-8 text-[#9DB68B]" />}
                         title="Visual Graphing"
-                        description="Interactive node graphs visualize your site's structure and accessibility score distribution."
+                        description="Provides interactive linkage maps for websites, to analyze site structure and accessibility."
                         delay={0.2}
                     />
                     <FeatureCard
                         icon={<DocumentIcon className="w-8 h-8 text-[#9DB68B]" />}
                         title="PDF Reports"
-                        description="Generate professional, detailed PDF reports ready for your compliance team or developers."
+                        description="Findings are summarized in PDF reports, readily available to submit to the website owners themselves or to report violations to ADA compliance organizations."
                         delay={0.3}
                     />
                 </div>
