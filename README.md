@@ -1,15 +1,4 @@
-# Aria - AI-Powered Web Accessibility Auditor
-
-**Verifying website ADA compliance, through headless browsing, webscraping, and GenAI vision.**
-
-## Why It Matters
-Website accessibility is not a privilege but a requirement. Despite ADA regulations to ensure accessibility across the web, numerous websites continue to violate these rules, and the web remains unnavigable for users with disabilities.
-
-## Features
-*   **AI-Powered Analysis**: Uses GenAI to analyze website images as well as ARIA roles.
-*   **Visual Graphing**: Provides interactive linkage maps for websites, to analyze site structure and accessibility.
-*   **PDF Reports**: Findings are summarized in PDF reports, readily available to submit to the website owners themselves or to report violations to ADA compliance organizations.
-*   **Hybrid Engine**: Uses Playwright for headless browsing and BeautifulSoup for static analysis.
+# Aria - ADA Compliance Auditor
 
 ## Project Structure
 *   `backend/`: Python FastAPI application + Playwright + Gemini integration.
@@ -70,7 +59,6 @@ From the `frontend/` directory:
 ```bash
 npm run dev
 ```
-*The frontend will typically run at http://localhost:5173*
 
 ## Usage
 1.  Open your browser to the local frontend URL (e.g., `http://localhost:5173`).
@@ -79,5 +67,3 @@ npm run dev
 4.  Enable "AI Analysis" for deeper visual checks.
 5.  Wait for the audit to complete and download your PDF report.
 
----
-*Built with ❤️ for a more accessible web.*
