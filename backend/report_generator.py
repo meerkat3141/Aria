@@ -6,6 +6,9 @@ import os
 
 class ReportGenerator:
     def generate_pdf(self, job_data: dict, output_path: str):
+        out_dir = os.path.dirname(os.path.abspath(output_path))
+        if out_dir:
+            os.makedirs(out_dir, exist_ok=True)
         doc = SimpleDocTemplate(output_path, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
         styles = getSampleStyleSheet()
         styles['Normal'].fontName = 'Helvetica'
