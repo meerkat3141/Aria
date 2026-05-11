@@ -6,6 +6,7 @@ interface Props {
     onGetStarted: () => void;
 }
 
+// Landing page component highlighting project features and ADA compliance importance
 export const LandingPage: React.FC<Props> = ({ onGetStarted }) => {
     return (
         <div className="relative z-10 space-y-24 pb-20">

@@ -64,23 +64,23 @@ npm run dev
 
 Aria Assist is a companion Chrome Extension that acts as an immediate accessibility patch for non-compliant websites. It features a Text Magnifier (Loupe), Text-to-Speech, Contrast Filters, and Dyslexia Font rendering.
 
-### Installation Instructions
-1. Open Google Chrome and type `chrome://extensions/` into the URL bar.
-2. Turn **ON** the **"Developer mode"** toggle in the top right corner of the page.
-3. Click the **"Load unpacked"** button in the top left corner.
-4. Navigate to your project folder and select the **`extension`** folder. Click "Select Folder".
-5. The extension is now installed! You can click the puzzle piece icon 🧩 in Chrome to pin it to your toolbar for easy access.
+### Setup Instructions
+1. Go to Google Chrome, then enter `chrome://extensions/` into the browser URL bar.
+2. Switch on **Developer mode** using the toggle at the top-right of this page.
+3. Click on **Load unpacked** located at the top-left of this page.
+4. Browse to your project folder, select the `extension` sub-folder, then click "Select Folder".
+5. The extension has now been installed! You can pin it to your toolbar for easy access by clicking on the puzzle piece icon 🧩 in Chrome.
 
-> **Important:** If you add new logos or make any code changes to the extension folder, you **must** click the circular **Refresh icon ↻** on the Aria Assist card in the `chrome://extensions/` page to force Chrome to load the updates.
+> **Note:** If you add any new logos or change any code within the extension folder, you **must click** the circular **Refresh icon ↻** on the Aria Assist card on the `chrome://extensions/` page to force Chrome to load your changes.
 
-## Usage
-1.  Open the local frontend URL in your browser (e.g., `http://localhost:5173`).
-2.  Click **Start Compliance Audit**.
-3.  Paste your list of websites in the entry field (e.g., `plantpico.com`).
-4.  Enable "AI Analysis" for deeper visual checks.
-5.  Allow the audit to run and you will be able to download a PDF report of ADA compliance checks.
+### How To Use
+1. Open the local frontend URL in your browser (for example: `http://localhost:5173`).
+2. Click **Start Compliance Audit**.
+3. Paste your list of websites into the entry field (for example: `plantpico.com`).
+4. Enable **AI Analysis** if you want an additional level of visual checking.
+5. When the audit runs its course, you will then have the option to download an ADA compliance report in the form of a PDF.
 
-## Purpose
-Approximately 95 - 97% of websites are not compliant with WCAG (Web Content Accesibility Guidelines) detailed in the American Disability Act (ADA). Since it is increasingly difficult to detect these violations and report them efficiently, websites continue to violate these regulations
+### Why It's Important
+Approximately 95 - 97% of websites do not comply with the Web Content Accessibility Guidelines (WCAG) as outlined in the Americans with Disabilities Act (ADA), and it is becoming more difficult to identify and report these violations.
 
-This tool is designed to allow users to audit multiple websites for ADA compliance. Using an AI headless browser, the application efficiently and accurately audits multiple websites for ADA complaiance.The application generates a PDF report of ADA checks for each website which can be viewed in the dashboard. The application checks for missing alt text, poor color contrast, missing ARIA roles, and other common ADA violations. The PDF generation capability of this appliction allows for efficent claim submissions to ADA regulation agencies and helps alleviate the issue of inaccessible websites for disabled users
+This tool is designed to allow users to audit multiple websites for ADA compliance. Using an AI headless browser, the application efficiently and accurately audits multiple websites. It generates a PDF report of ADA checks for each website, which can be viewed in the dashboard. The application checks for missing alt text, poor color contrast, missing ARIA roles, and other common ADA violations. The PDF generation capability of this application allows for efficient claim submissions to ADA regulation agencies, helping to alleviate the issue of inaccessible websites for disabled users.

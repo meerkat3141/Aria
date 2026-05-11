@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MailIcon, SpinnerIcon, DocumentIcon } from './Icons';
 import { api } from '../services/api';
 
+// Form interface for submitting formal ADA compliance complaints
 export const ReportEmailForm: React.FC = () => {
     const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,6 +23,7 @@ export const ReportEmailForm: React.FC = () => {
         }
     };
 
+    // Simulate sending an email with the attached audit report to enforcement agencies
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('sending');

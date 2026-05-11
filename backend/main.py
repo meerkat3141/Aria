@@ -9,6 +9,7 @@ import os
 import json
 import sys
 
+# Configure Windows event loop to prevent async errors
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
@@ -17,12 +18,15 @@ from crawler import Crawler
 from auditor import ADAAuditor
 from report_generator import ReportGenerator
 
+# Initialize SQLite database tables
 init_db()
 
+# Initialize FastAPI application
 app = FastAPI(title="ADA Compliance Auditor API")
 
 from fastapi.middleware.cors import CORSMiddleware
 
+# Configure CORS to allow frontend connections
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -31,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Define request schemas
 class AuditRequest(BaseModel):
     urls: List[str]
     enable_ai: bool = True
@@ -46,8 +51,10 @@ class AuditStatusResponse(BaseModel):
     status: str
     progress: Optional[str] = None
 
+# In memory state for audit progress tracking
 job_progress = {}
 
+# Helper function to update job status in the database
 def update_job_status(db, job_id, status, error=None):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
     if job:
@@ -56,11 +63,13 @@ def update_job_status(db, job_id, status, error=None):
             job.error_message = str(error)
         db.commit()
 
+# Synchronous wrapper for background task execution
 def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = True):
     if sys.platform == 'win32':
         asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
     asyncio.run(run_audit_task_async(job_id, start_urls, enable_ai))
 
+# Core asynchronous audit logic
 async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bool = True):
     db = SessionLocal()
     auditor = ADAAuditor(enable_ai=enable_ai)
@@ -69,6 +78,7 @@ async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bo
     try:
         update_job_status(db, job_id, "Processing")
         
+        # Crawl specified URLs to find subpages
         all_pages_to_audit = []
         all_edges = []
         for url in start_urls:
@@ -79,6 +89,7 @@ async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bo
         
         all_pages_to_audit = list(set(all_pages_to_audit))
         
+        # Store crawl graph data in job
         job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
         if job:
             job.graph_data = {"edges": all_edges}
@@ -86,6 +97,7 @@ async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bo
 
         job_progress[job_id] = f"0/{len(all_pages_to_audit)} pages audited"
         
+        # Audit each discovered page
         results = []
         for i, page_url in enumerate(all_pages_to_audit):
             job_progress[job_id] = f"{i+1}/{len(all_pages_to_audit)} pages audited"
@@ -104,6 +116,7 @@ async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bo
     finally:
         db.close()
 
+# API Endpoint to start a new background audit
 @app.post("/audit/start", response_model=AuditStatusResponse)
 async def start_audit(request: AuditRequest, background_tasks: BackgroundTasks, db = Depends(get_db)):
     job_id = str(uuid.uuid4())
@@ -114,12 +127,14 @@ async def start_audit(request: AuditRequest, background_tasks: BackgroundTasks, 
     background_tasks.add_task(run_audit_task, job_id, request.urls, request.enable_ai)
     return {"job_id": job_id, "status": "Pending"}
 
+# API Endpoint to mock email submission
 @app.post("/email/send")
 async def send_email(request: EmailRequest):
     # Simulate network delay for realistic presentation effect
     await asyncio.sleep(1.5)
     return {"status": "success", "message": f"Email successfully sent to {request.recipient}"}
 
+# API Endpoint to poll job status
 @app.get("/audit/{job_id}/status")
 async def get_status(job_id: str, db = Depends(get_db)):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
@@ -129,6 +144,7 @@ async def get_status(job_id: str, db = Depends(get_db)):
     progress = job_progress.get(job_id, "")
     return {"job_id": job_id, "status": job.status, "progress": progress, "error": job.error_message}
 
+# API Endpoint to retrieve audit JSON results
 @app.get("/audit/{job_id}/results")
 async def get_results(job_id: str, db = Depends(get_db)):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
@@ -140,6 +156,7 @@ async def get_results(job_id: str, db = Depends(get_db)):
     
     return {"job_id": job_id, "status": job.status, "results": data, "graph_data": job.graph_data}
 
+# API Endpoint to generate and download PDF report
 @app.get("/audit/{job_id}/report/pdf")
 async def get_pdf_report(job_id: str, db = Depends(get_db)):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
@@ -158,7 +175,7 @@ async def get_pdf_report(job_id: str, db = Depends(get_db)):
     
     report_gen = ReportGenerator()
     
-    # Extract domain name for the PDF filename
+    # Extract domain name for the PDF filename formatting
     domain = "website"
     if job.urls and len(job.urls) > 0:
         from urllib.parse import urlparse

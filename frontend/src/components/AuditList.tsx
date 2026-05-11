@@ -15,6 +15,7 @@ interface Props {
     jobs: string[];
 }
 
+// Renders the list of audit jobs with interactive hover effects
 export const AuditList: React.FC<Props> = ({ jobs }) => {
     let reversedJobs = jobs.slice().reverse();
     return (
@@ -76,6 +77,7 @@ export const HoverEffect = ({
     );
 };
 
+// Translates numeric score into project themed letter grades
 export const getLetterGrade = (score: number) => {
     if (score >= 90) return { grade: 'A', color: 'text-white bg-[#9DB68B] border-[#9DB68B]' };
     if (score >= 80) return { grade: 'B', color: 'text-[#2C3E50] bg-[#9DB68B]/40 border-[#9DB68B]/50' };
@@ -115,12 +117,14 @@ export const GradeGuide = ({ onClose, className }: { onClose: () => void, classN
     </div>
 );
 
+// JobCard handles individual audit polling and display logic
 const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
     const [status, setStatus] = useState<JobStatus | null>(null);
     const [results, setResults] = useState<JobResults | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [showGradeGuide, setShowGradeGuide] = useState(false);
 
+    // Poll backend API every 3 seconds until job completes
     useEffect(() => {
         let interval: any;
 
@@ -132,6 +136,7 @@ const JobCard: React.FC<{ jobId: string }> = ({ jobId }) => {
                 if (data.status === 'Completed' || data.status === 'Failed') {
                     clearInterval(interval);
                     if (data.status === 'Completed') {
+                        // Fetch final compliance results upon completion
                         api.getResults(jobId).then(setResults).catch(console.error);
                     }
                 }

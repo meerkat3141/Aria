@@ -4,6 +4,7 @@ from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
 import httpx
 
+# Handles web crawling and link discovery for the target domain
 class Crawler:
     def __init__(self, start_url: str, max_pages: int = 5):
         self.start_url = start_url.rstrip('/')
@@ -14,6 +15,7 @@ class Crawler:
 
         self.edges = [] 
 
+    # Asynchronously crawls the target URL to extract subpages and generate a site graph
     async def crawl(self) -> dict:
         found_urls = []
         

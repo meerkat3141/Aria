@@ -12,6 +12,7 @@ interface Props {
     onClose: () => void;
 }
 
+// Modal displaying detailed compliance results and site graph for a completed audit job
 export const DetailsModal: React.FC<Props> = ({ jobId, results, onClose }) => {
     const [showGradeGuide, setShowGradeGuide] = useState(false);
     

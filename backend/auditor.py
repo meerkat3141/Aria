@@ -13,10 +13,12 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     GEMINI_API_KEY = GEMINI_API_KEY.strip()
 
+# Wrapper class for Google Gemini API integration
 class GeminiClient:
     def __init__(self):
         self.client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
+    # Execute prompt against Gemini model with exponential backoff for rate limits
     async def generate_content(self, prompt: str, image_bytes: bytes = None) -> str:
         if not self.client:
             return "[MOCK] Gemini response: Valid/Suggestion"
@@ -52,11 +54,13 @@ class GeminiClient:
                     return f"[ERROR] Gemini check failed: {str(e)}"
         return "[ERROR] Gemini check failed: Max retries exhausted"
 
+# Core auditing engine using Playwright for DOM analysis
 class ADAAuditor:
     def __init__(self, enable_ai: bool = False):
         self.enable_ai = enable_ai
         self.gemini = GeminiClient()
 
+    # Launch headless browser and execute WCAG compliance checks on target URL
     async def audit_page(self, url: str) -> Dict[str, Any]:
         results = {
             "url": url,
@@ -93,6 +97,7 @@ class ADAAuditor:
         
         return results
 
+    # Helper function to standardize output formatting for compliance checks
     def create_check(self, cid, name, status, description, remediation=None):
         return {
             "id": cid,
@@ -102,6 +107,7 @@ class ADAAuditor:
             "remediation": remediation
         }
 
+    # WCAG Principle 1: Perceivable - Check for missing alt text and poor color contrast
     async def check_perceivable(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         
@@ -183,6 +189,7 @@ class ADAAuditor:
 
         return checks
 
+    # WCAG Principle 2: Operable - Check for page titles, skip links, and navigation
     async def check_operable(self, page: Page, soup: BeautifulSoup, url: str) -> List[Dict[str, Any]]:
         checks = []
         
@@ -218,6 +225,7 @@ class ADAAuditor:
 
         return checks
 
+    # WCAG Principle 3: Understandable - Check for HTML lang attributes and form labels
     async def check_understandable(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         
@@ -261,6 +269,7 @@ class ADAAuditor:
 
         return checks
 
+    # WCAG Principle 4: Robust - Validate ARIA roles against specifications
     async def check_robust(self, page: Page, soup: BeautifulSoup) -> List[Dict[str, Any]]:
         checks = []
         

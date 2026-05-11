@@ -4,7 +4,9 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 import os
 
+# Handles the creation and formatting of PDF compliance reports
 class ReportGenerator:
+    # Generate a PDF report from job data and save it to the specified output path
     def generate_pdf(self, job_data: dict, output_path: str):
         out_dir = os.path.dirname(os.path.abspath(output_path))
         if out_dir:
@@ -72,6 +74,7 @@ class ReportGenerator:
                             
                             import html
                             
+                            # Helper to safely encode HTML entities for ReportLab rendering
                             def clean_xml(text):
                                 if not text: return ""
                                 text = text.replace('&', '&amp;')

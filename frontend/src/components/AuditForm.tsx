@@ -6,10 +6,12 @@ interface Props {
     isLoading: boolean;
 }
 
+// Component for submitting new audit requests with URL inputs and AI toggle
 export const AuditForm: React.FC<Props> = ({ onAuditStart, isLoading }) => {
     const [text, setText] = useState('');
     const [enableAi, setEnableAi] = useState(true);
 
+    // Process form submission and trigger the audit workflow
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!text.trim()) return;

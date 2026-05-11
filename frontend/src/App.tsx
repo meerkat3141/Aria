@@ -8,11 +8,14 @@ import { Squares } from './components/Squares';
 import { HomeIcon, PlusIcon, DashboardIcon, MailIcon } from './components/Icons';
 import { ReportEmailForm } from './components/ReportEmailForm';
 
+// Main Application Component wrapping routing and global layout
 function App() {
+  // Global application state management
   const [jobIds, setJobIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'home' | 'new' | 'history' | 'email'>('home');
 
+  // Trigger audit process and transition to dashboard tab
   const handleStartAudit = async (urls: string[], enableAi: boolean) => {
     setIsLoading(true);
     setActiveTab('history');

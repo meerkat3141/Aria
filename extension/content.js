@@ -1,7 +1,8 @@
+// Prevent multiple injections of the content script on the same page
 if (!window.ariaAssistInjected) {
     window.ariaAssistInjected = true;
 
-    // State
+    // Feature state tracking
     let lineReaderEl = null;
     let isLineReaderActive = false;
 
@@ -10,7 +11,7 @@ if (!window.ariaAssistInjected) {
 
     let isTTSActive = false;
 
-    // DOM Setup for Line Reader
+    // Initialize and track the Line Reader DOM element
     function initLineReader() {
         if (!lineReaderEl) {
             lineReaderEl = document.createElement('div');
@@ -25,7 +26,7 @@ if (!window.ariaAssistInjected) {
         }
     }
 
-    // DOM Setup for Hover Loupe (Magnifier)
+    // Initialize the Hover Loupe (Text Magnifier) DOM element
     function initLoupe() {
         if (!loupeEl) {
             loupeEl = document.createElement('div');
@@ -70,7 +71,7 @@ if (!window.ariaAssistInjected) {
         }
     }
 
-    // TTS Listener - triggers on text selection
+    // Setup Text-to-Speech listener to trigger on mouseup selection
     document.addEventListener('mouseup', () => {
         if (!isTTSActive) return;
         
@@ -85,7 +86,7 @@ if (!window.ariaAssistInjected) {
         }
     });
 
-    // Listen for toggle commands from the popup
+    // Listen for toggle commands from the extension popup
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === "toggleFeature") {
             const { feature, state, value } = request;

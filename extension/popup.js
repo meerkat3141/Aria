@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggles = ['linereader', 'loupe', 'tts', 'dyslexia'];
     const selects = ['contrast'];
 
-    // Load saved states
+    // Retrieve saved feature states from local storage on popup load
     chrome.storage.local.get([...toggles, ...selects], (result) => {
         toggles.forEach(feature => {
             const toggle = document.getElementById(`toggle-${feature}`);
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Helper to send messages
+    // Helper function to inject scripts and pass messages to the active tab
     function notifyContentScript(feature, state, value = null) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             if (tabs[0] && tabs[0].id) {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add event listeners for toggles
+    // Attach change listeners to all toggle switches
     toggles.forEach(feature => {
         const toggle = document.getElementById(`toggle-${feature}`);
         if (!toggle) return;
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Add event listeners for selects
+    // Attach change listeners to dropdown selections
     selects.forEach(feature => {
         const select = document.getElementById(`select-${feature}`);
         if (!select) return;
