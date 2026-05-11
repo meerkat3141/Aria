@@ -17,7 +17,7 @@ class Crawler:
     async def crawl(self) -> dict:
         found_urls = []
         
-        async with httpx.AsyncClient(follow_redirects=True, timeout=10.0) as client:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=10.0, verify=False) as client:
             while self.queue and len(found_urls) < self.max_pages:
                 current_url = self.queue.pop(0)
                 

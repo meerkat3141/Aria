@@ -22,5 +22,16 @@ export const api = {
 
     getReportUrl: (jobId: string) => {
         return `${API_URL}/audit/${jobId}/report/pdf`;
+    },
+
+    getCompletedJobs: async (): Promise<{job_id: string, filename: string}[]> => {
+        const response = await axios.get(`${API_URL}/audit/jobs/completed`);
+        return response.data;
+    },
+
+    sendEmail: async (data: import('../types').EmailRequest): Promise<{status: string; message: string}> => {
+        const response = await axios.post(`${API_URL}/email/send`, data);
+        return response.data;
     }
 };
+

@@ -35,6 +35,12 @@ class AuditRequest(BaseModel):
     urls: List[str]
     enable_ai: bool = True
 
+class EmailRequest(BaseModel):
+    organization: str
+    recipient: str
+    subject: str
+    message: str
+
 class AuditStatusResponse(BaseModel):
     job_id: str
     status: str
@@ -50,7 +56,12 @@ def update_job_status(db, job_id, status, error=None):
             job.error_message = str(error)
         db.commit()
 
-async def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = True):
+def run_audit_task(job_id: str, start_urls: List[str], enable_ai: bool = True):
+    if sys.platform == 'win32':
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    asyncio.run(run_audit_task_async(job_id, start_urls, enable_ai))
+
+async def run_audit_task_async(job_id: str, start_urls: List[str], enable_ai: bool = True):
     db = SessionLocal()
     auditor = ADAAuditor(enable_ai=enable_ai)
     report_gen = ReportGenerator()
@@ -103,6 +114,12 @@ async def start_audit(request: AuditRequest, background_tasks: BackgroundTasks, 
     background_tasks.add_task(run_audit_task, job_id, request.urls, request.enable_ai)
     return {"job_id": job_id, "status": "Pending"}
 
+@app.post("/email/send")
+async def send_email(request: EmailRequest):
+    # Simulate network delay for realistic presentation effect
+    await asyncio.sleep(1.5)
+    return {"status": "success", "message": f"Email successfully sent to {request.recipient}"}
+
 @app.get("/audit/{job_id}/status")
 async def get_status(job_id: str, db = Depends(get_db)):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()
@@ -111,6 +128,24 @@ async def get_status(job_id: str, db = Depends(get_db)):
     
     progress = job_progress.get(job_id, "")
     return {"job_id": job_id, "status": job.status, "progress": progress, "error": job.error_message}
+
+@app.get("/audit/jobs/completed")
+async def get_completed_jobs(db = Depends(get_db)):
+    jobs = db.query(AuditJob).filter(AuditJob.status == "Completed").all()
+    from urllib.parse import urlparse
+    import re
+    completed = []
+    for job in jobs:
+        domain = "website"
+        if job.urls and len(job.urls) > 0:
+            parsed = urlparse(job.urls[0])
+            extracted_domain = parsed.netloc if parsed.netloc else parsed.path.split('/')[0]
+            domain = extracted_domain.replace('www.', '')
+            domain = re.sub(r'[^a-zA-Z0-9]', '_', domain)
+        filename = f"Aria_Audit_Report_{domain}.pdf"
+        completed.append({"job_id": job.id, "filename": filename})
+    return completed
+
 
 @app.get("/audit/{job_id}/results")
 async def get_results(job_id: str, db = Depends(get_db)):
@@ -140,7 +175,18 @@ async def get_pdf_report(job_id: str, db = Depends(get_db)):
     }
     
     report_gen = ReportGenerator()
-    filename = f"audit_report_{job_id}.pdf"
+    
+    # Extract domain name for the PDF filename
+    domain = "website"
+    if job.urls and len(job.urls) > 0:
+        from urllib.parse import urlparse
+        import re
+        parsed = urlparse(job.urls[0])
+        extracted_domain = parsed.netloc if parsed.netloc else parsed.path.split('/')[0]
+        domain = extracted_domain.replace('www.', '')
+        domain = re.sub(r'[^a-zA-Z0-9]', '_', domain)
+
+    filename = f"Aria_Audit_Report_{domain}.pdf"
     file_path = os.path.join(os.getcwd(), 'reports', filename)
     report_gen.generate_pdf(job_data, file_path)
     

@@ -43,3 +43,10 @@ export interface JobResults {
     results: PageResult[];
     graph_data?: GraphData;
 }
+
+export interface EmailRequest {
+    organization: string;
+    recipient: string;
+    subject: string;
+    message: string;
+}

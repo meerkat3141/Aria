@@ -5,12 +5,13 @@ import { LandingPage } from './components/LandingPage';
 import { api } from './services/api';
 import { BackgroundLines } from './components/BackgroundLines';
 import { Squares } from './components/Squares';
-import { HomeIcon, PlusIcon, DashboardIcon } from './components/Icons';
+import { HomeIcon, PlusIcon, DashboardIcon, MailIcon } from './components/Icons';
+import { ReportEmailForm } from './components/ReportEmailForm';
 
 function App() {
   const [jobIds, setJobIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'home' | 'new' | 'history'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'new' | 'history' | 'email'>('home');
 
   const handleStartAudit = async (urls: string[], enableAi: boolean) => {
     setIsLoading(true);
@@ -61,6 +62,14 @@ function App() {
             <span className="font-medium">Dashboard</span>
             {jobIds.length > 0 && <span className="ml-auto bg-white/30 text-xs px-2 py-0.5 rounded-full text-[#2C3E50]">{jobIds.length}</span>}
           </button>
+
+          <button
+            onClick={() => setActiveTab('email')}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === 'email' ? 'bg-[#9DB68B] text-white shadow-md' : 'text-[#5D6D7E] hover:bg-[#9DB68B]/20 hover:text-[#2C3E50]'}`}
+          >
+            <MailIcon className={`w-5 h-5 transition-colors ${activeTab === 'email' ? 'text-white' : 'group-hover:text-[#9DB68B]'}`} />
+            <span className="font-medium">File Claim</span>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-[#9DB68B]/30">
@@ -91,11 +100,13 @@ function App() {
             {activeTab !== 'home' && (
               <header className="mb-8">
                 <h1 className="text-3xl font-bold text-[#2C3E50] mb-2 font-serif">
-                  {activeTab === 'new' ? 'Initialize Audit' : 'Audit Dashboard'}
+                  {activeTab === 'new' ? 'Initialize Audit' : activeTab === 'email' ? 'File Official Claim' : 'Audit Dashboard'}
                 </h1>
                 <p className="text-[#5D6D7E]">
                   {activeTab === 'new'
                     ? 'Enter targets for automated compliance verification.'
+                    : activeTab === 'email'
+                    ? 'Submit formal notifications to enforcement agencies.'
                     : 'Real-time status tracking and report generation.'}
                 </p>
               </header>
@@ -111,6 +122,10 @@ function App() {
 
             <div className={`transition-all duration-500 ${activeTab === 'history' ? 'opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
               <AuditList jobs={jobIds} />
+            </div>
+
+            <div className={`transition-all duration-500 ${activeTab === 'email' ? 'opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
+              <ReportEmailForm sessionJobIds={jobIds} />
             </div>
 
           </div>

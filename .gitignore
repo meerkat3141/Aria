@@ -22,25 +22,25 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Virtual Environment
+# virtual env
 venv/
 env/
 ENV/
 .venv/
 
-# Environment Variables (IMPORTANT)
+# environment variables
 .env
 .env.local
 
-# Database
+# database
 *.db
 *.sqlite3
 
-# IDEs
+# IDE
 .vscode/
 .idea/
 
-# Project Specific
+# other
 *.pdf
 audit_report_*.json
 logs/
