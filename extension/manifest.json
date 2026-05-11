@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Aria Assist",
+  "version": "1.0",
+  "description": "On-demand accessibility tools (Line Reader, Text-to-Speech, Contrast) for any website.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "logo-aria.png",
+    "48": "logo-aria.png",
+    "128": "logo-aria.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

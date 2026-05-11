@@ -60,6 +60,19 @@ From the `frontend/` directory:
 npm run dev
 ```
 
+## Aria Assist Chrome Extension
+
+Aria Assist is a companion Chrome Extension that acts as an immediate accessibility patch for non-compliant websites. It features a Text Magnifier (Loupe), Text-to-Speech, Contrast Filters, and Dyslexia Font rendering.
+
+### Installation Instructions
+1. Open Google Chrome and type `chrome://extensions/` into the URL bar.
+2. Turn **ON** the **"Developer mode"** toggle in the top right corner of the page.
+3. Click the **"Load unpacked"** button in the top left corner.
+4. Navigate to your project folder and select the **`extension`** folder. Click "Select Folder".
+5. The extension is now installed! You can click the puzzle piece icon 🧩 in Chrome to pin it to your toolbar for easy access.
+
+> **Important:** If you add new logos or make any code changes to the extension folder, you **must** click the circular **Refresh icon ↻** on the Aria Assist card in the `chrome://extensions/` page to force Chrome to load the updates.
+
 ## Usage
 1.  Open the local frontend URL in your browser (e.g., `http://localhost:5173`).
 2.  Click **Start Compliance Audit**.
