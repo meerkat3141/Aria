@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MailIcon, SpinnerIcon, DocumentIcon } from './Icons';
 import { api } from '../services/api';
 
-export const ReportEmailForm: React.FC<{ sessionJobIds: string[] }> = ({ sessionJobIds }) => {
+export const ReportEmailForm: React.FC = () => {
     const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
     const [attachedFile, setAttachedFile] = useState<string>('');
-    const [completedJobs, setCompletedJobs] = useState<{job_id: string, filename: string}[]>([]);
-    
-    useEffect(() => {
-        const fetchJobs = async () => {
-            try {
-                const jobs = await api.getCompletedJobs();
-                const sessionJobs = jobs.filter(job => sessionJobIds.includes(job.job_id));
-                setCompletedJobs(sessionJobs);
-            } catch (error) {
-                console.error("Failed to fetch jobs:", error);
-            }
-        };
-        fetchJobs();
-    }, [sessionJobIds]);
     
     const [formData, setFormData] = useState({
         recipient: 'ADA.complaint@usdoj.gov',
@@ -120,9 +106,9 @@ export const ReportEmailForm: React.FC<{ sessionJobIds: string[] }> = ({ session
                                         ${attachedFile ? 'border-[#9DB68B] font-medium' : 'border-[#D4C5B0]'}`}
                                 >
                                     <option value="">-- No Attachment --</option>
-                                    {completedJobs.map(job => (
-                                        <option key={job.job_id} value={job.filename}>{job.filename}</option>
-                                    ))}
+                                    <option value="Aria_Audit_Report_plantpico_com.pdf">Aria_Audit_Report_plantpico_com.pdf</option>
+                                    <option value="Aria_Audit_Report_example_com.pdf">Aria_Audit_Report_example_com.pdf</option>
+                                    <option value="Aria_Audit_Report_target_com.pdf">Aria_Audit_Report_target_com.pdf</option>
                                 </select>
                                 <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
                                     <svg className="w-4 h-4 text-earth-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">

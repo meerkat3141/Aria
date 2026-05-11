@@ -129,24 +129,6 @@ async def get_status(job_id: str, db = Depends(get_db)):
     progress = job_progress.get(job_id, "")
     return {"job_id": job_id, "status": job.status, "progress": progress, "error": job.error_message}
 
-@app.get("/audit/jobs/completed")
-async def get_completed_jobs(db = Depends(get_db)):
-    jobs = db.query(AuditJob).filter(AuditJob.status == "Completed").all()
-    from urllib.parse import urlparse
-    import re
-    completed = []
-    for job in jobs:
-        domain = "website"
-        if job.urls and len(job.urls) > 0:
-            parsed = urlparse(job.urls[0])
-            extracted_domain = parsed.netloc if parsed.netloc else parsed.path.split('/')[0]
-            domain = extracted_domain.replace('www.', '')
-            domain = re.sub(r'[^a-zA-Z0-9]', '_', domain)
-        filename = f"Aria_Audit_Report_{domain}.pdf"
-        completed.append({"job_id": job.id, "filename": filename})
-    return completed
-
-
 @app.get("/audit/{job_id}/results")
 async def get_results(job_id: str, db = Depends(get_db)):
     job = db.query(AuditJob).filter(AuditJob.id == job_id).first()

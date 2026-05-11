@@ -125,7 +125,7 @@ function App() {
             </div>
 
             <div className={`transition-all duration-500 ${activeTab === 'email' ? 'opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
-              <ReportEmailForm sessionJobIds={jobIds} />
+              <ReportEmailForm />
             </div>
 
           </div>
